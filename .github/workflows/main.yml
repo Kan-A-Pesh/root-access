@@ -1,0 +1,41 @@
+name: Build and Deploy
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v2
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Build frontend
+              run: npm run build
+
+            - name: Install SSH key
+              uses: webfactory/ssh-agent@v0.5.3
+              with:
+                  ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+            - name: Upload code to VM
+              run: scp -r -o StrictHostKeyChecking=no ./ username@vm_ip:/path/to/destination
+
+            - name: SSH into VM and deploy
+              uses: appleboy/ssh-action@master
+              with:
+                  host: vm_ip
+                  username: username
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  script: |
+                      cd /path/to/destination
+                      npm ci
+                      npm run build
+                      screen -X -S screen_name kill
+                      screen -S screen_name -d -m npm start

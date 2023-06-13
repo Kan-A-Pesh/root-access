@@ -1,0 +1,45 @@
+{
+    "name": "root-access",
+    "version": "1.0.0",
+    "description": "Une web-app permettant la gestion des membres, des projets, et l'intégration avec GitHub, avec des fonctionnalités d'accès FTP, SFTP et SSH.",
+    "main": "entry.js",
+    "scripts": {
+        "back:dev": "nodemon --files server/index.ts",
+        "back:serve": "ts-node --files server/index.ts",
+        "back:build": "tsup server/index.ts --dts --minify --format cjs --target node14 --outDir build/server",
+        "front:dev": "cd client && vite",
+        "front:serve": "cd client && vite preview",
+        "front:build": "cd client && vite build",
+        "build": "npm run back:build && npm run front:build"
+    },
+    "author": "Kan-à-Pesh",
+    "license": "ISC",
+    "private": true,
+    "dependencies": {
+        "@solidjs/router": "^0.8.2",
+        "axios": "^1.4.0",
+        "bcrypt": "^5.1.0",
+        "cors": "^2.8.5",
+        "dotenv": "^16.1.4",
+        "express": "^4.18.2",
+        "jsonwebtoken": "^9.0.0",
+        "mongoose": "^7.2.2",
+        "nodemailer": "^6.9.3"
+    },
+    "devDependencies": {
+        "@types/bcrypt": "^5.0.0",
+        "@types/cors": "^2.8.13",
+        "@types/express": "^4.17.17",
+        "@types/jsonwebtoken": "^9.0.2",
+        "@types/node": "^20.2.5",
+        "@types/nodemailer": "^6.4.8",
+        "nodemon": "^2.0.22",
+        "solid-js": "^1.7.6",
+        "ts-node": "^10.9.1",
+        "tsconfig-paths": "^4.2.0",
+        "tsup": "^6.7.0",
+        "typescript": "^5.1.3",
+        "vite": "^4.3.9",
+        "vite-plugin-solid": "^2.7.0"
+    }
+}
