@@ -18,6 +18,7 @@ export enum ProjectStatus {
 
 export interface Project extends Document {
     name: string;
+    password: string;
     displayName: string;
     description: string;
     status: ProjectStatus;
@@ -35,7 +36,11 @@ const projectSchema = new Schema<Project>({
         type: String,
         required: true,
         unique: true,
-        validate: /^[a-z0-9_-]+$/,
+        validate: /^[a-z][a-z0-9_-]*$/,
+    },
+    password: {
+        type: String,
+        required: true,
     },
     displayName: {
         type: String,

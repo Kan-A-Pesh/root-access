@@ -25,7 +25,7 @@ const userSchema = new Schema<User>({
         type: String,
         required: true,
         unique: true,
-        validate: /^[a-z0-9_-]+$/,
+        validate: /^[a-z][a-z0-9_-]*$/,
     },
     email: {
         type: String,

@@ -27,7 +27,7 @@ export default async (req: Request, res: Response) => {
         });
     }
 
-    if (/^[a-z0-9_-]+$/.test(req.body.handle) === false) {
+    if (/^[a-z][a-z0-9_-]*$/.test(req.body.handle) === false) {
         return res.status(400).json({
             status: "error",
             payload: {
