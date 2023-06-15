@@ -3,8 +3,9 @@ import path from "path";
 
 import { Project } from "@/models/project";
 import { randomPassword } from "@/utils/random";
-import { execSync } from "child_process";
+import { exec, execSync } from "child_process";
 import { checkSudoPermission } from "@/utils/sudo";
+import { Proxy } from "./proxy";
 
 export const getWorkspacesPath: () => string = () => {
     return process.env.WORKSPACES_ROOT ?? "/workspaces";
@@ -37,7 +38,7 @@ export default class Workspace {
             `# ${this.name}\n\n` + `Welcome to your new workspace 🎉!`,
         );
 
-        // Generate credentials (for FTP, SSH, etc.)
+        // Generate a random password (for FTP)
         this.password = randomPassword();
 
         if (!checkSudoPermission()) {
@@ -51,6 +52,20 @@ export default class Workspace {
         // Change the owner and permissions of the workspace directory
         execSync(`chown -R ${this.name}:${this.name} ${path.join(getWorkspacesPath(), this.name)}`);
         execSync(`chmod -R 755 ${path.join(getWorkspacesPath(), this.name)}`);
+
+        // Generate an SSH key
+        execSync(`ssh-keygen -t rsa -b 4096 -f ${path.join(getWorkspacesPath(), this.name, ".ssh", "id_rsa")} -q -N ""`);
+        execSync(
+            `cp ${path.join(getWorkspacesPath(), this.name, ".ssh", "id_rsa.pub")} ${path.join(
+                getWorkspacesPath(),
+                this.name,
+                ".ssh",
+                "authorized_keys",
+            )}`,
+        );
+
+        execSync(`chown -R ${this.name}:${this.name} ${path.join(getWorkspacesPath(), this.name, ".ssh")}`);
+        execSync(`chmod -R 700 ${path.join(getWorkspacesPath(), this.name, ".ssh")}`);
     }
 
     public delete(): void {
@@ -58,15 +73,19 @@ export default class Workspace {
             throw new Error("Workspace does not exist");
         }
 
-        // Delete the workspace directory
-        fs.rmdirSync(path.join(getWorkspacesPath(), this.name));
-
         if (!checkSudoPermission()) {
             throw new Error("Insufficient permissions");
         }
 
-        // Delete the user for SSH
-        execSync(`userdel ${this.name}`);
+        // Delete the user and workspace directory
+        fs.rmdirSync(path.join(getWorkspacesPath(), this.name), { recursive: true });
+        execSync(`userdel ${this.name} --force`);
+
+        // Remove all WEB aliases
+        Proxy.removeProjectAliasesByName(this.name);
+        if (!Proxy.applyConfig()) {
+            throw new Error("Failed to apply proxy configuration");
+        }
     }
 
     public getRoot(): string {
@@ -77,6 +96,14 @@ export default class Workspace {
         return path.join(getWorkspacesPath(), this.name);
     }
 
+    public getSSHPrivateKey(): string {
+        if (!this.exists()) {
+            throw new Error("Workspace does not exist");
+        }
+
+        return fs.readFileSync(path.join(getWorkspacesPath(), this.name, ".ssh", "id_rsa")).toString();
+    }
+
     // Generate a workspace from a project
     public static fromProject(project: Project): Workspace {
         return new Workspace(project.name, project.password);
@@ -84,6 +111,7 @@ export default class Workspace {
 
     // Generate a mock workspace from a name
     public static fromName(name: string): Workspace {
-        return new Workspace(name);
+        const workspace = new Workspace(name);
+        return workspace;
     }
 }

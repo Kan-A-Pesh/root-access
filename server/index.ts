@@ -7,10 +7,17 @@ import { FtpServer } from "ftpd";
 
 import Workspace, { getWorkspacesPath } from "@/controllers/workspace";
 import ProjectModel, { Project } from "@/models/project";
+import { checkSudoPermission } from "./utils/sudo";
 
 async function main() {
     // Environment variables
     dotenv.config({ path: __dirname + "/../.env" });
+
+    // Check permissions
+    if (!checkSudoPermission()) {
+        console.log("\x1b[31m[🛑 SYST]:\x1b[33m Insufficient permissions\x1b[0m");
+        return process.exit(1);
+    }
 
     // Database (MongoDB)
     mongoose.connect(process.env.MONGO_URI as string);

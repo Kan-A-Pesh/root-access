@@ -9,11 +9,22 @@ export enum ProjectRole {
 }
 
 export enum ProjectStatus {
-    IDEA = "idea",
     PLANED = "planed",
     IN_PROGRESS = "in_progress",
     FINISHED = "finished",
     ABANDONED = "abandoned",
+}
+
+export class ProjectUtils {
+    public static hasPermission(userPermission: ProjectRole, requiredPermission: ProjectRole) {
+        if (userPermission === ProjectRole.ADMIN) return true;
+        if (userPermission === ProjectRole.DEV && requiredPermission === ProjectRole.DEV) return true;
+        if (userPermission === ProjectRole.RESPO && requiredPermission !== ProjectRole.ADMIN) return true;
+        if (userPermission === ProjectRole.CHIEF && requiredPermission !== ProjectRole.ADMIN && requiredPermission !== ProjectRole.RESPO)
+            return true;
+
+        return false;
+    }
 }
 
 export interface Project extends Document {
@@ -28,6 +39,11 @@ export interface Project extends Document {
     permissions: Array<{
         userId: ObjectId;
         role: ProjectRole;
+    }>;
+    proxyAliases: Array<{
+        id: number;
+        remoteUrls: string[];
+        destination: string;
     }>;
 }
 
@@ -57,15 +73,15 @@ const projectSchema = new Schema<Project>({
     },
     startDate: {
         type: Date,
-        required: true,
+        required: false,
     },
     endDate: {
         type: Date,
-        required: true,
+        required: false,
     },
     githubRepo: {
         type: String,
-        required: true,
+        required: false,
     },
     permissions: [
         {
@@ -77,6 +93,22 @@ const projectSchema = new Schema<Project>({
             role: {
                 type: String,
                 enum: Object.values(ProjectRole),
+                required: true,
+            },
+        },
+    ],
+    proxyAliases: [
+        {
+            id: {
+                type: Number,
+                required: true,
+            },
+            remoteUrls: {
+                type: [String],
+                required: true,
+            },
+            destination: {
+                type: String,
                 required: true,
             },
         },

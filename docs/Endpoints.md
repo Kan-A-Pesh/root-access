@@ -21,39 +21,6 @@ Les réponses sont au format JSON, ayant une propriété `status` qui indique le
 }
 ```
 
-## Sommaire
-
-- [Développement](#développement)
-  - **GET** /status
-  - **GET** /coffee
-  - **GET** /protected (🔒)
-
-- [Authentification](#authentification)
-  - **POST** /auth/login
-  - **POST** /auth/register (🔒)
-  - **POST** /auth/register/admin (🔒)
-  - **POST** /auth/register/finish (🔒)
-  - **POST** /auth/logout (🔒)
-
-- [Utilisateurs](#utilisateurs)
-  - **GET** /users/list (🔒)
-  - **GET** /users/:handle (🔒)
-  - **DELETE** /users/:handle (🔒)
-  - **PATCH** /users/:handle (🔒)
-
-- [Projets](#projets)
-  - **GET** /projects (🔒)
-  - **GET** /projects/:project_id (🔒)
-  - **POST** /projects (🔒)
-  - **DELETE** /projects/:project_id (🔒)
-  - **PATCH** /projects/:project_id (🔒)
-  
-- [Membres (par projet)](#membres-par-projet)
-  - **GET** /projects/:project_id/members (🔒)
-  - **POST** /projects/:project_id/members (🔒)
-  - **DELETE** /projects/:project_id/members/:handle (🔒)
-  - **PATCH** /projects/:project_id/members/:handle (🔒)
-
 ## Développement
 
 ### GET /status
@@ -240,8 +207,8 @@ Retourne les informations d'un utilisateur, ou de l'utilisateur connecté si auc
 
 #### Paramètres
 
-| Nom      | Type    | Description                           |
-| -------- | ------- | ------------------------------------- |
+| Nom    | Type    | Description                           |
+| ------ | ------- | ------------------------------------- |
 | handle | astring | Le nom d'utilisateur de l'utilisateur |
 
 #### Réponses
@@ -309,7 +276,6 @@ Les projets peuvent être filtrés par nom, description, statut, date de début 
 | Nom         | Type   | Description                |
 | ----------- | ------ | -------------------------- |
 | name        | string | Le nom du projet           |
-| description | string | La description du projet   |
 | status      | status | Le statut du projet        |
 | start_date  | date   | La date de début du projet |
 | end_date    | date   | La date de fin du projet   |
@@ -327,6 +293,8 @@ Les projets peuvent être filtrés par nom, description, statut, date de début 
 > 🔒 Rôle autorisé: `admin`, `respo`, `chief`, `dev`
 
 Retourne les informations d'un projet.
+
+> 🗒️ Note: Certaines informations ne sont pas retournées selon le rôle de l'utilisateur connecté.
 
 #### Paramètres
 
@@ -510,3 +478,88 @@ Met à jour le rôle d'un membre d'un projet.
 | 400  | Mauvaise requête. Le corps de la requête est invalide |
 | 401  | Non autorisé. L'utilisateur n'est pas connecté        |
 | 404  | Non trouvé. Le projet/l'utilisateur n'existe pas      |
+
+## Alias (par projet)
+
+### GET /projects/:project_id/aliases (🔒)
+
+> 🔒 Rôle autorisé: `admin`, `respo`, `chief`, `dev`
+
+Retourne la liste des alias de proxy d'un project, c'est à dire les noms de domaine (et/ou sous-domaines) et leurs cibles (URL ou chemin) respectifs.
+
+#### Paramètres
+
+| Nom          | Type   | Description             |
+| ------------ | ------ | ----------------------- |
+| project_id\* | number | L'identifiant du projet |
+
+#### Réponses
+
+| Code | Description                                        |
+| ---- | -------------------------------------------------- |
+| 200  | Succès. La liste des alias du projet est retournée |
+| 401  | Non autorisé. L'utilisateur n'est pas connecté     |
+| 404  | Non trouvé. Le projet n'existe pas                 |
+
+### POST /projects/:project_id/aliases (🔒)
+
+> 🔒 Rôle autorisé: `admin`, `respo`, `chief`
+
+Ajoute un alias de proxy à un projet.\
+À noter que les noms de domaine et sous-domaines sont une liste et qu'il est possible d'en ajouter plusieurs à la fois.
+
+> 🗒️ Note: Les chemins sont relatifs à la racine du projet.
+> 🗒️ Note: Uniquement le port est envoyé pour les URLs (8000 pour `http://localhost:8000` par exemple).
+
+*⚠️ Important:* Les modifications sur les alias de proxy rechargent automatiquement le proxy,
+ce qui peut ralentir temporairement toute l'infrastructure.
+
+**Exemple:**\
+Les domaines `example.com` et `www.example.com` pointent vers `https://localhost:3000`\
+La requête sera donc:
+
+```json
+{
+    "remote": ["example.com", "www.example.com"],
+    "destination": 3000
+}
+```
+
+#### Paramètres
+
+| Nom           | Type     | Description             |
+| ------------- | -------- | ----------------------- |
+| project_id\*  | number   | L'identifiant du projet |
+| remote\*      | string[] | Les noms de domaine     |
+| destination\* | string   | L'URL ou le chemin      |
+
+#### Réponses
+
+| Code | Description                                           |
+| ---- | ----------------------------------------------------- |
+| 201  | Succès. L'alias a été ajouté au projet                |
+| 400  | Mauvaise requête. Le corps de la requête est invalide |
+| 401  | Non autorisé. L'utilisateur n'est pas connecté        |
+| 404  | Non trouvé. Le projet n'existe pas                    |
+| 409  | Conflit. L'alias existe déjà                          |
+
+### DELETE /projects/:project_id/aliases/:alias_id (🔒)
+
+> 🔒 Rôle autorisé: `admin`, `respo`, `chief`
+
+Supprime un alias de proxy d'un projet.
+
+#### Paramètres
+
+| Nom          | Type   | Description              |
+| ------------ | ------ | ------------------------ |
+| project_id\* | number | L'identifiant du projet  |
+| alias_id\*   | number | L'identifiant de l'alias |
+
+#### Réponses
+
+| Code | Description                                    |
+| ---- | ---------------------------------------------- |
+| 200  | Succès. L'alias a été supprimé du projet       |
+| 401  | Non autorisé. L'utilisateur n'est pas connecté |
+| 404  | Non trouvé. Le projet/l'alias n'existe pas     |

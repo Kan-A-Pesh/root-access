@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 
-import ProjectModel from "@/models/project";
+import ProjectModel, { ProjectRole } from "@/models/project";
+import { UserRole } from "@/models/user";
 
-export const requireAuth = async (req: Request, res: Response, next: NextFunction) => {
+export const requireRole = async (req: Request, res: Response, next: NextFunction) => {
     // Verify project
     const project_id = req.query.project_id;
 
@@ -27,6 +28,15 @@ export const requireAuth = async (req: Request, res: Response, next: NextFunctio
         });
     }
 
+    // Check for admin or respo
+    if (req.user?.role === UserRole.ADMIN || req.user?.role === UserRole.RESPO) {
+        // Add to request
+        req.project = project.toObject();
+        req.permissionRole = req.user?.role === UserRole.ADMIN ? ProjectRole.ADMIN : ProjectRole.RESPO;
+
+        return next();
+    }
+
     // Get user role from project
     const permission = project.permissions.find((value) => value.userId === req.user?._id);
 
@@ -39,10 +49,8 @@ export const requireAuth = async (req: Request, res: Response, next: NextFunctio
         });
     }
 
-    // Add project to request
+    // Add to request
     req.project = project.toObject();
-
-    // Add permission to request
     req.permissionRole = permission.role;
 
     next();

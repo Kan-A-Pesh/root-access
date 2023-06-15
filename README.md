@@ -1,5 +1,7 @@
 # Dashboard ROOT//ACCESS
 
+> 🗒️ *Note:* ROOT//ACCESS utilise le système d'utilisateur d'UNIX, il ne fonctionne donc que sur des systèmes UNIX (Linux, macOS, etc.).
+
 Le Dashboard ROOT//ACCESS est une web-app permettant la gestion des membres, des projets. \
 Il vous permet d'ajouter, supprimer et mettre à jour facilement les informations des membres, ainsi que de créer, supprimer et modifier les détails des projets. \
 Le dashboard vous permet également de lier des dépôts GitHub pour des processus d'intégration continue et de déploiement (CI/CD), tout en offrant un accès FTP, SFTP et SSH pour une collaboration et un déploiement efficaces.
