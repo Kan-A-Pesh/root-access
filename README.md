@@ -14,6 +14,29 @@ Le dashboard vous permet également de lier des dépôts GitHub pour des process
 
 ## 🚀 Installation
 
+### Prérequis
+
+Le projet nécessite Node.js, npm et MongoDB pour fonctionner.
+
+```bash
+# Installer Node.js et npm
+sudo apt install nodejs npm
+
+# Installer MongoDB
+sudo apt install mongodb
+```
+
+Il est aussi possible d'installer MongoDB avec Docker.
+
+```bash
+# Démarrer un conteneur MongoDB
+docker run -d -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD=root --name root-mongodb mongo
+
+# Web UI (facultatif)
+npm install -g mongoku
+mongoku start
+```
+
 ### Création d'un compte administrateur
 
 La création de compte administrateur est nécessaire pour accéder au dashboard. \
