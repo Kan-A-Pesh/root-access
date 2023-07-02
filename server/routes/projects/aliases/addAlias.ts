@@ -2,7 +2,7 @@ import { Proxy } from "@/controllers/proxy";
 import ProjectModel, { Project, ProjectRole, ProjectUtils } from "@/models/project";
 import { Request, Response } from "express";
 
-export default (req: Request, res: Response) => {
+export default async (req: Request, res: Response) => {
     if (!ProjectUtils.hasPermission(req.permissionRole ?? ProjectRole.DEV, ProjectRole.CHIEF)) {
         return res.status(400).json({
             status: "error",
@@ -36,7 +36,7 @@ export default (req: Request, res: Response) => {
 
     for (let alias of remote) {
         // Check if alias is a valid URL (sub.sub.domain.tld)
-        if (!alias.match(/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6}$/)) {
+        if (!alias.match(/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,10}$/)) {
             return res.status(400).json({
                 status: "error",
                 payload: {
@@ -111,7 +111,7 @@ export default (req: Request, res: Response) => {
     Proxy.writeProjectAliases(req.project as Project);
     Proxy.applyConfig();
 
-    const project = ProjectModel.updateOne({ _id: req.project?._id }, { proxyAliases: req.project?.proxyAliases });
+    const project = await ProjectModel.updateOne({ _id: req.project?._id }, { proxyAliases: req.project?.proxyAliases });
 
     if (!project) {
         return res.status(500).json({

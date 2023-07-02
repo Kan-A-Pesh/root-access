@@ -1,5 +1,5 @@
 import ProjectModel, { ProjectRole, ProjectUtils } from "@/models/project";
-import UserModel from "@/models/user";
+import UserModel, { UserRole } from "@/models/user";
 import { Request, Response } from "express";
 
 export default async (req: Request, res: Response) => {
@@ -33,6 +33,16 @@ export default async (req: Request, res: Response) => {
             status: "error",
             payload: {
                 message: "User not found",
+            },
+        });
+    }
+
+    // Check if the user is a ADMIN or RESPO
+    if (user.role === UserRole.ADMIN || user.role === UserRole.RESPO) {
+        return res.status(400).json({
+            status: "error",
+            payload: {
+                message: "User is already a member of this project",
             },
         });
     }

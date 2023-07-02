@@ -37,6 +37,16 @@ npm install -g mongoku
 mongoku start
 ```
 
+Le projet utilise NGINX pour le reverse proxy, il est donc nécessaire de l'installer.
+
+```bash
+# Installer NGINX
+sudo apt install nginx
+
+# Démarrer NGINX
+sudo systemctl start nginx # ou `sudo service nginx start`
+```
+
 ### Création d'un compte administrateur
 
 La création de compte administrateur est nécessaire pour accéder au dashboard. \

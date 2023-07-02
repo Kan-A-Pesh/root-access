@@ -12,6 +12,7 @@ export default (req: Request, res: Response) => {
         startDate: req.project?.startDate,
         endDate: req.project?.endDate,
         aliases: req.project?.proxyAliases,
+        role: req.permissionRole,
         editGithubRepo: false,
         editPermissions: false,
         editAliases: false,
@@ -29,7 +30,6 @@ export default (req: Request, res: Response) => {
 
     if (ProjectUtils.hasPermission(req.permissionRole ?? ProjectRole.DEV, ProjectRole.RESPO)) {
         project.password = req.project?.password;
-        project.privateKey = Workspace.fromName(req.project?.name ?? "").getSSHPrivateKey();
         project.editGithubRepo = true;
         project.editPermissions = true;
         project.readPrivateKey = true;

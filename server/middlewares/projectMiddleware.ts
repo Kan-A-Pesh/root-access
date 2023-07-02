@@ -5,7 +5,7 @@ import { UserRole } from "@/models/user";
 
 export const requireRole = async (req: Request, res: Response, next: NextFunction) => {
     // Verify project
-    const project_id = req.query.project_id;
+    const project_id = req.params.project_id;
 
     if (!project_id) {
         return res.status(400).json({

@@ -60,6 +60,22 @@ main {
     min-width: min(300px, 80vw);
 }
 
+.scrollable {
+    overflow-y: auto;
+    min-height: 200px;
+    flex-grow: 1;
+    max-height: 40vh;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.card .card {
+    background: #0003;
+    min-width: 100%;
+    gap: 4px;
+}
+
 .text-title {
     font-size: 16px;
     letter-spacing: 3px;
@@ -127,6 +143,27 @@ main {
     color: white;
 }
 
+.btn-secondary {
+    background: #111316;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #1e1f22;
+    color: white;
+}
+
+.btn-disabled {
+    background: #111316;
+    color: white;
+    opacity: 0.5;
+}
+
+.btn-disabled:hover {
+    background: #111316;
+    color: white;
+}
+
 .btn-danger {
     border: 1px solid #d71f1f;
     background: transparent;
@@ -144,6 +181,14 @@ h1 {
     font-weight: 900;
     font-size: 64px;
     text-transform: uppercase;
+}
+
+.error {
+    color: #d71f1f;
+}
+
+.success {
+    color: #2c5797;
 }
 
 @media screen and (max-width: 768px) {

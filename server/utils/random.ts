@@ -13,5 +13,5 @@ export const randomText: () => string = () => {
 
 // Generate a random password (e.g. "abcde-fghij-klmno")
 export const randomPassword: () => string = () => {
-    return randomPassword() + "-" + randomPassword() + "-" + randomPassword();
+    return randomText() + "-" + randomText() + "-" + randomText();
 };

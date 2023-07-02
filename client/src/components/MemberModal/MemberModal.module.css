@@ -1,0 +1,57 @@
+.modal {
+    position: fixed;
+    z-index: 9999;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.backdrop {
+    position: fixed;
+    z-index: 9998;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #0008;
+    backdrop-filter: blur(5px);
+}
+
+.card {
+    min-width: 400px;
+    max-width: 700px;
+    height: 65vh;
+    padding: 24px;
+    background-color: black;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    pointer-events: all;
+}
+
+.scrollable {
+    gap: 12px !important;
+    margin-top: 16px;
+    max-height: 100% !important;
+}
+
+.element {
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+    align-items: center;
+    background-color: #fff1;
+    padding: 20px;
+}
+
+.element > div:nth-child(1) {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}

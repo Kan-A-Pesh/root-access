@@ -30,13 +30,10 @@ export default class Workspace {
         }
 
         // Create the workspace directory
-        fs.mkdirSync(path.join(getWorkspacesPath(), this.name));
+        fs.mkdirSync(path.join(this.getRoot()));
 
         // Create a README.md file
-        fs.writeFileSync(
-            path.join(getWorkspacesPath(), this.name, "README.md"),
-            `# ${this.name}\n\n` + `Welcome to your new workspace 🎉!`,
-        );
+        fs.writeFileSync(path.join(this.getRoot(), "README.md"), `# ${this.name}\n\n` + `Welcome to your new workspace 🎉!`);
 
         // Generate a random password (for FTP)
         this.password = randomPassword();
@@ -46,26 +43,31 @@ export default class Workspace {
         }
 
         // Create a user for SSH
-        execSync(`useradd -m -d ${path.join(getWorkspacesPath(), this.name)} -s /bin/bash ${this.name}`);
+        execSync(`useradd -m -d ${path.join(this.getRoot())} -s /bin/bash ${this.name}`);
         execSync(`echo "${this.name}:${this.password}" | chpasswd`);
 
         // Change the owner and permissions of the workspace directory
-        execSync(`chown -R ${this.name}:${this.name} ${path.join(getWorkspacesPath(), this.name)}`);
-        execSync(`chmod -R 755 ${path.join(getWorkspacesPath(), this.name)}`);
+        execSync(`chown -R ${this.name}:${this.name} ${path.join(this.getRoot())}`);
+        execSync(`chmod -R 700 ${path.join(this.getRoot())}`);
 
         // Generate an SSH key
-        execSync(`ssh-keygen -t rsa -b 4096 -f ${path.join(getWorkspacesPath(), this.name, ".ssh", "id_rsa")} -q -N ""`);
+        fs.mkdirSync(path.join(this.getRoot(), ".ssh"));
+        execSync(`ssh-keygen -t rsa -b 4096 -f ${path.join(this.getRoot(), ".ssh", "id_rsa")} -q -N ""`);
         execSync(
-            `cp ${path.join(getWorkspacesPath(), this.name, ".ssh", "id_rsa.pub")} ${path.join(
-                getWorkspacesPath(),
-                this.name,
-                ".ssh",
-                "authorized_keys",
-            )}`,
+            `cp ${path.join(this.getRoot(), ".ssh", "id_rsa.pub")} ${path.join(getWorkspacesPath(), this.name, ".ssh", "authorized_keys")}`,
         );
 
-        execSync(`chown -R ${this.name}:${this.name} ${path.join(getWorkspacesPath(), this.name, ".ssh")}`);
-        execSync(`chmod -R 700 ${path.join(getWorkspacesPath(), this.name, ".ssh")}`);
+        execSync(`chown -R ${this.name}:${this.name} ${path.join(this.getRoot(), ".ssh")}`);
+        execSync(`chmod -R 700 ${path.join(this.getRoot(), ".ssh")}`);
+        execSync(`chmod 600 ${path.join(this.getRoot(), ".ssh", "id_rsa")}`);
+
+        // Add SSH config
+        const configPath = path.join(this.getRoot(), ".ssh", "config");
+        execSync(`echo "Port 22" >> ${configPath}`);
+        execSync(`echo "PasswordAuthentication yes" >> ${configPath}`);
+        execSync(`echo "PubkeyAuthentication yes" >> ${configPath}`);
+        execSync(`echo "PermitRootLogin no" >> ${configPath}`);
+        execSync(`echo "AllowUsers ${this.name}" >> ${configPath}`);
     }
 
     public delete(): void {
@@ -78,7 +80,7 @@ export default class Workspace {
         }
 
         // Delete the user and workspace directory
-        fs.rmdirSync(path.join(getWorkspacesPath(), this.name), { recursive: true });
+        fs.rmdirSync(path.join(this.getRoot()), { recursive: true });
         execSync(`userdel ${this.name} --force`);
 
         // Remove all WEB aliases
@@ -101,7 +103,15 @@ export default class Workspace {
             throw new Error("Workspace does not exist");
         }
 
-        return fs.readFileSync(path.join(getWorkspacesPath(), this.name, ".ssh", "id_rsa")).toString();
+        return fs.readFileSync(path.join(this.getRoot(), ".ssh", "id_rsa")).toString();
+    }
+
+    public getSSHPublicKey(): string {
+        if (!this.exists()) {
+            throw new Error("Workspace does not exist");
+        }
+
+        return fs.readFileSync(path.join(this.getRoot(), ".ssh", "id_rsa.pub")).toString();
     }
 
     // Generate a workspace from a project

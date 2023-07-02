@@ -64,7 +64,7 @@ export default async (req: Request, res: Response) => {
         name: req.body.name,
         password: workspace.password,
         displayName: req.body.displayName ?? req.body.name,
-        description: req.body.description ?? "",
+        description: req.body.description ?? "A new project",
         status: status,
         startDate: (req.body.startDate as Date) ?? null,
         endDate: (req.body.endDate as Date) ?? null,

@@ -13,11 +13,11 @@ export class Alias {
         this.destination = destination;
     }
 
-    public toNginxConfig(): string {
+    public toNginxConfig(project: Project): string {
         let config: string = "";
 
         // Check if destination is a path or a port
-        if (isNaN(Number(this.destination))) {
+        if (!isNaN(Number(this.destination))) {
             config += `
                 location / {
                     proxy_pass http://localhost:${this.destination};
@@ -32,7 +32,7 @@ export class Alias {
             `;
         } else {
             config += `
-                root ${path.join(getWorkspacesPath(), this.destination)};
+                root ${path.join(getWorkspacesPath(), project.name, this.destination)};
                 index index.php index.html index.htm;
 
                 location / {
@@ -97,7 +97,7 @@ export class Proxy {
         let config: string = "";
 
         for (const alias of this.getProjectAliases(project)) {
-            config += alias.toNginxConfig();
+            config += alias.toNginxConfig(project);
         }
 
         return config;

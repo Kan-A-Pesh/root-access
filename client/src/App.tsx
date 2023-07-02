@@ -7,9 +7,11 @@ import NotFound from "~/pages/NotFound/NotFound";
 import Logout from "~/pages/Logout/Logout";
 
 import Members from "~/pages/Home/Members/Members";
-import AddMember from "~/pages/Home/AddMember/AddMember";
+import AddMember from "~/pages/Home/Members/AddMember";
+import Profile from "~/pages/Home/Members/Profile";
 import Projects from "~/pages/Home/Projects/Projects";
-import Profile from "~/pages/Home/Profile/Profile";
+import AddProject from "~/pages/Home/Projects/AddProject";
+import Stats from "~/pages/Home/Projects/Stats";
 
 import Background from "~/components/Background/Background";
 
@@ -25,6 +27,8 @@ const App: Component = () => {
                     <Route path="/members/add" component={AddMember} />
                     <Route path="/members/:handle" component={Profile} />
                     <Route path="/projects" component={Projects} />
+                    <Route path="/projects/add" component={AddProject} />
+                    <Route path="/projects/:id" component={Stats} />
                 </Route>
                 <Route path="/logout" component={Logout} />
                 <Route path="/login" component={Login} />

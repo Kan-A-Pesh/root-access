@@ -25,7 +25,8 @@
         "ftpd": "^0.2.16",
         "jsonwebtoken": "^9.0.0",
         "mongoose": "^7.2.2",
-        "nodemailer": "^6.9.3"
+        "nodemailer": "^6.9.3",
+        "path": "^0.12.7"
     },
     "devDependencies": {
         "@types/bcrypt": "^5.0.0",

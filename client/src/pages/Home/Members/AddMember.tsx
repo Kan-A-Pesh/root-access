@@ -1,5 +1,4 @@
 import { Component, Signal, createSignal } from "solid-js";
-import styles from "./AddMember.module.css";
 import axios from "axios";
 
 const AddMember: Component = () => {
@@ -7,6 +6,30 @@ const AddMember: Component = () => {
     const [userRole, setUserRole]: Signal<string> = createSignal<string>("member");
     const [userEmail, setUserEmail]: Signal<string> = createSignal<string>("");
     const [loading, setLoading]: Signal<boolean> = createSignal<boolean>(false);
+
+    const createMember = () => {
+        setLoading(true);
+
+        axios
+            .post("/auth/register", {
+                realname: userRealname(),
+                email: userEmail(),
+                role: userRole(),
+            })
+            .then((res: any) => {
+                if (res.data.status === "success") {
+                    alert("Invitation sent!");
+                    setUserEmail("");
+                    setUserRealname("");
+                    setUserRole("member");
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+                alert("Something went wrong!\nErr: " + err.response.data.payload.message ?? err.message ?? "Unknown error");
+            })
+            .finally(() => setLoading(false));
+    };
 
     return (
         <>
@@ -50,34 +73,7 @@ const AddMember: Component = () => {
 
                 <div class="card">
                     <h2 class="text-title">// Send invitation</h2>
-                    <button
-                        class="form-element btn btn-primary"
-                        onClick={() => {
-                            setLoading(true);
-
-                            axios
-                                .post("/auth/register", {
-                                    realname: userRealname(),
-                                    email: userEmail(),
-                                    role: userRole(),
-                                })
-                                .then((res: any) => {
-                                    if (res.data.status === "success") {
-                                        alert("Invitation sent!");
-                                        setUserEmail("");
-                                        setUserRealname("");
-                                        setUserRole("member");
-                                    }
-                                })
-                                .catch((err) => {
-                                    console.error(err);
-                                    alert("Something went wrong!\nErr: " + err.data.payload.message ?? err.message ?? "Unknown error");
-                                });
-
-                            setLoading(false);
-                        }}
-                        disabled={loading()}
-                    >
+                    <button class="form-element btn btn-primary" onClick={createMember} disabled={loading()}>
                         Confirm
                     </button>
                 </div>
