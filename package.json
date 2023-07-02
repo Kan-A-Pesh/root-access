@@ -9,8 +9,9 @@
         "back:build": "tsup server/index.ts --dts --minify --format cjs --target node14 --outDir build/server",
         "front:dev": "cd client && vite",
         "front:serve": "cd client && vite preview",
-        "front:build": "cd client && vite build",
-        "build": "npm run back:build && npm run front:build"
+        "front:build": "cd client && vite build --emptyOutDir",
+        "build": "env-cmd npm run back:build && env-cmd npm run front:build",
+        "start": "env-cmd node build/server/index.js"
     },
     "author": "Kan-à-Pesh",
     "license": "ISC",
