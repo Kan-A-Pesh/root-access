@@ -29,11 +29,13 @@ export default class Workspace {
             throw new Error("Workspace already exists");
         }
 
+        const rootPath = path.join(getWorkspacesPath(), this.name);
+
         // Create the workspace directory
-        fs.mkdirSync(path.join(this.getRoot()));
+        fs.mkdirSync(rootPath);
 
         // Create a README.md file
-        fs.writeFileSync(path.join(this.getRoot(), "README.md"), `# ${this.name}\n\n` + `Welcome to your new workspace 🎉!`);
+        fs.writeFileSync(path.join(rootPath, "README.md"), `# ${this.name}\n\n` + `Welcome to your new workspace 🎉!`);
 
         // Generate a random password (for FTP)
         this.password = randomPassword();
@@ -43,26 +45,24 @@ export default class Workspace {
         }
 
         // Create a user for SSH
-        execSync(`useradd -m -d ${path.join(this.getRoot())} -s /bin/bash ${this.name}`);
+        execSync(`useradd -m -d ${path.join(rootPath)} -s /bin/bash ${this.name}`);
         execSync(`echo "${this.name}:${this.password}" | chpasswd`);
 
         // Change the owner and permissions of the workspace directory
-        execSync(`chown -R ${this.name}:${this.name} ${path.join(this.getRoot())}`);
-        execSync(`chmod -R 700 ${path.join(this.getRoot())}`);
+        execSync(`chown -R ${this.name}:${this.name} ${path.join(rootPath)}`);
+        execSync(`chmod -R 700 ${path.join(rootPath)}`);
 
         // Generate an SSH key
-        fs.mkdirSync(path.join(this.getRoot(), ".ssh"));
-        execSync(`ssh-keygen -t rsa -b 4096 -f ${path.join(this.getRoot(), ".ssh", "id_rsa")} -q -N ""`);
-        execSync(
-            `cp ${path.join(this.getRoot(), ".ssh", "id_rsa.pub")} ${path.join(getWorkspacesPath(), this.name, ".ssh", "authorized_keys")}`,
-        );
+        fs.mkdirSync(path.join(rootPath, ".ssh"));
+        execSync(`ssh-keygen -t rsa -b 4096 -f ${path.join(rootPath, ".ssh", "id_rsa")} -q -N ""`);
+        execSync(`cp ${path.join(rootPath, ".ssh", "id_rsa.pub")} ${path.join(getWorkspacesPath(), this.name, ".ssh", "authorized_keys")}`);
 
-        execSync(`chown -R ${this.name}:${this.name} ${path.join(this.getRoot(), ".ssh")}`);
-        execSync(`chmod -R 700 ${path.join(this.getRoot(), ".ssh")}`);
-        execSync(`chmod 600 ${path.join(this.getRoot(), ".ssh", "id_rsa")}`);
+        execSync(`chown -R ${this.name}:${this.name} ${path.join(rootPath, ".ssh")}`);
+        execSync(`chmod -R 700 ${path.join(rootPath, ".ssh")}`);
+        execSync(`chmod 600 ${path.join(rootPath, ".ssh", "id_rsa")}`);
 
         // Add SSH config
-        const configPath = path.join(this.getRoot(), ".ssh", "config");
+        const configPath = path.join(rootPath, ".ssh", "config");
         execSync(`echo "Port 22" >> ${configPath}`);
         execSync(`echo "PasswordAuthentication yes" >> ${configPath}`);
         execSync(`echo "PubkeyAuthentication yes" >> ${configPath}`);
@@ -71,10 +71,6 @@ export default class Workspace {
     }
 
     public delete(): void {
-        if (!this.exists()) {
-            throw new Error("Workspace does not exist");
-        }
-
         if (!checkSudoPermission()) {
             throw new Error("Insufficient permissions");
         }
@@ -99,18 +95,10 @@ export default class Workspace {
     }
 
     public getSSHPrivateKey(): string {
-        if (!this.exists()) {
-            throw new Error("Workspace does not exist");
-        }
-
         return fs.readFileSync(path.join(this.getRoot(), ".ssh", "id_rsa")).toString();
     }
 
     public getSSHPublicKey(): string {
-        if (!this.exists()) {
-            throw new Error("Workspace does not exist");
-        }
-
         return fs.readFileSync(path.join(this.getRoot(), ".ssh", "id_rsa.pub")).toString();
     }
 
