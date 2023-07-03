@@ -73,6 +73,32 @@ const Stats: Component = () => {
                         readKeys={project().readPrivateKey}
                     />
                 </Show>
+                <Show when={project().canDelete}>
+                    <div class="card">
+                        <h2 class="text-title">// DELETE PROJECT</h2>
+                        <p class="text-handle">WARNING: This action is irreversible.</p>
+                        <button
+                            class="btn btn-danger"
+                            onClick={() => {
+                                if (
+                                    prompt(`Are you sure you want to delete this project? Type \"${project().name}\" to confirm.`) ===
+                                    project().name
+                                ) {
+                                    axios
+                                        .delete(`/projects/${project().id}`)
+                                        .then((res: any) => {
+                                            window.location.href = "/dash/projects";
+                                        })
+                                        .catch((err) => {
+                                            console.error(err);
+                                        });
+                                }
+                            }}
+                        >
+                            Delete Project
+                        </button>
+                    </div>
+                </Show>
             </div>
         </>
     );

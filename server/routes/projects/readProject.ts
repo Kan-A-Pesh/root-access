@@ -18,6 +18,7 @@ export default (req: Request, res: Response) => {
         editAliases: false,
         editMetadata: false,
         readPrivateKey: false,
+        canDelete: false,
     };
 
     // Add permissions if user has Chief or higher role
@@ -33,6 +34,7 @@ export default (req: Request, res: Response) => {
         project.editGithubRepo = true;
         project.editPermissions = true;
         project.readPrivateKey = true;
+        project.canDelete = true;
     }
 
     res.status(200).json({
