@@ -15,8 +15,8 @@ export default (req: Request, res: Response) => {
     res.status(200).json({
         status: "success",
         payload: {
-            private: workspace.getSSHPrivateKey() + "\n",
-            public: workspace.getSSHPublicKey() + "\n",
+            private: workspace.getSSHPrivateKey(),
+            public: workspace.getSSHPublicKey(),
         },
     });
 };

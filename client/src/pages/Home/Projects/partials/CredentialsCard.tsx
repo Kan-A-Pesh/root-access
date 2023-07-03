@@ -38,10 +38,10 @@ const CredentialsCard: Component<{
                 <div class="card">
                     <p class="text-role">KEYS</p>
                     <Show when={keys()}>
-                        <a href={"data:text/plain," + keys().private} download={name + ".key"} class="btn btn-primary">
+                        <a href={"data:text/plain;base64," + btoa(keys().private)} download={name + ".key"} class="btn btn-primary">
                             Download private key
                         </a>
-                        <a href={"data:text/plain," + keys().public} download={name + ".key.pub"} class="btn btn-primary">
+                        <a href={"data:text/plain;base64," + btoa(keys().public)} download={name + ".key.pub"} class="btn btn-primary">
                             Download public key
                         </a>
                     </Show>
