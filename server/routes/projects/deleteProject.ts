@@ -12,7 +12,12 @@ export default async (req: Request, res: Response) => {
         });
     }
 
-    Workspace.fromProject(req.project as Project).delete();
+    try {
+        Workspace.fromProject(req.project as Project).delete();
+    } catch (err) {
+        console.warn("[⚠️ WARNING] Failed to delete workspace (Not found)");
+    }
+
     await ProjectModel.deleteOne({ _id: req.project?._id }).exec();
 
     res.status(200).json({
