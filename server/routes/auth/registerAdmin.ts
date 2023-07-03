@@ -76,7 +76,7 @@ export default (req: Request, res: Response) => {
 
     try {
         const config = require("@/config/mails/welcomeConfig.json");
-        let content = fs.readFileSync(__dirname + "/../../config/mails/welcomePage.html", "utf8");
+        let content = fs.readFileSync(process.env.EMAIL_TEMPLATE ?? __dirname + "/../../config/mails/welcomePage.html", "utf8");
 
         content = content.replaceAll("{{token}}", token);
         content = content.replaceAll("{{name}}", req.body.realname);
