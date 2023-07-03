@@ -54,20 +54,15 @@ export default class Workspace {
 
         // Generate an SSH key
         fs.mkdirSync(path.join(rootPath, ".ssh"));
-        execSync(`ssh-keygen -t rsa -b 4096 -f ${path.join(rootPath, ".ssh", "id_rsa")} -q -N ""`);
-        execSync(`cp ${path.join(rootPath, ".ssh", "id_rsa.pub")} ${path.join(getWorkspacesPath(), this.name, ".ssh", "authorized_keys")}`);
+        // RSA execSync(`ssh-keygen -t rsa -b 4096 -f ${path.join(rootPath, ".ssh", "id_ed25519")} -q -N ""`);
+        execSync(`ssh-keygen -o -a 100 -t ed25519 -f ${path.join(rootPath, ".ssh", "id_ed25519")} -q -N "" -C "${this.name}"`);
+        execSync(
+            `cp ${path.join(rootPath, ".ssh", "id_ed25519.pub")} ${path.join(getWorkspacesPath(), this.name, ".ssh", "authorized_keys")}`,
+        );
 
         execSync(`chown -R ${this.name}:${this.name} ${path.join(rootPath, ".ssh")}`);
         execSync(`chmod -R 700 ${path.join(rootPath, ".ssh")}`);
-        execSync(`chmod 600 ${path.join(rootPath, ".ssh", "id_rsa")}`);
-
-        // Add SSH config
-        const configPath = path.join(rootPath, ".ssh", "config");
-        execSync(`echo "Port 22" >> ${configPath}`);
-        execSync(`echo "PasswordAuthentication yes" >> ${configPath}`);
-        execSync(`echo "PubkeyAuthentication yes" >> ${configPath}`);
-        execSync(`echo "PermitRootLogin no" >> ${configPath}`);
-        execSync(`echo "AllowUsers ${this.name}" >> ${configPath}`);
+        execSync(`chmod 600 ${path.join(rootPath, ".ssh", "id_ed25519")}`);
     }
 
     public delete(): void {
@@ -95,11 +90,11 @@ export default class Workspace {
     }
 
     public getSSHPrivateKey(): string {
-        return fs.readFileSync(path.join(this.getRoot(), ".ssh", "id_rsa")).toString();
+        return fs.readFileSync(path.join(this.getRoot(), ".ssh", "id_ed25519")).toString();
     }
 
     public getSSHPublicKey(): string {
-        return fs.readFileSync(path.join(this.getRoot(), ".ssh", "id_rsa.pub")).toString();
+        return fs.readFileSync(path.join(this.getRoot(), ".ssh", "id_ed25519.pub")).toString();
     }
 
     // Generate a workspace from a project
