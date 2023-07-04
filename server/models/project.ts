@@ -16,7 +16,9 @@ export enum ProjectStatus {
 }
 
 export class ProjectUtils {
-    public static hasPermission(userPermission: ProjectRole, requiredPermission: ProjectRole) {
+    public static hasPermission(userPermission: ProjectRole | undefined, requiredPermission: ProjectRole) {
+        if (!userPermission) return false;
+
         if (userPermission === ProjectRole.ADMIN) return true;
         if (userPermission === ProjectRole.DEV && requiredPermission === ProjectRole.DEV) return true;
         if (userPermission === ProjectRole.RESPO && requiredPermission !== ProjectRole.ADMIN) return true;

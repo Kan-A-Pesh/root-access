@@ -70,14 +70,13 @@ export default async (req: Request, res: Response) => {
     }
 
     if (req.body.githubRepo) {
-        if (!ProjectUtils.hasPermission(req.permissionRole ?? ProjectRole.DEV, ProjectRole.RESPO)) {
-            return res.status(400).json({
-                status: "error",
-                payload: {
-                    message: "User does not have permission to update the GitHub repo url",
-                },
-            });
-        }
+        return res.status(400).json({
+            status: "error",
+            payload: {
+                message: "Github repo cannot be updated through this endpoint",
+                redirect: "/projects/:id/repo",
+            },
+        });
     }
 
     const project = await ProjectModel.updateOne({ _id: req.project._id }, changes);
