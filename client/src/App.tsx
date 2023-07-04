@@ -3,7 +3,6 @@ import { Router, Routes, Route } from "@solidjs/router";
 
 import Home from "~/pages/Home/Home";
 import Login from "~/pages/Login/Login";
-import NotFound from "~/pages/NotFound/NotFound";
 import Logout from "~/pages/Logout/Logout";
 
 import Members from "~/pages/Home/Members/Members";
@@ -12,6 +11,7 @@ import Profile from "~/pages/Home/Members/Profile";
 import Projects from "~/pages/Home/Projects/Projects";
 import AddProject from "~/pages/Home/Projects/AddProject";
 import Stats from "~/pages/Home/Projects/Stats";
+import Register from "~/pages/Register/Register";
 
 import Background from "~/components/Background/Background";
 
@@ -31,8 +31,8 @@ const App: Component = () => {
                     <Route path="/projects/:id" component={Stats} />
                 </Route>
                 <Route path="/logout" component={Logout} />
-                <Route path="/login" component={Login} />
-                <Route path="*" component={NotFound} />
+                <Route path="/register" component={Register} />
+                <Route path="/*" component={Login} />
             </Routes>
             <Background />
         </Router>
