@@ -3,9 +3,8 @@ import { A } from "@solidjs/router";
 
 import styles from "./Navbar.module.css";
 
-import users from "~/assets/img/icons/users.svg";
-import archive from "~/assets/img/icons/archive.svg";
-import logout from "~/assets/img/icons/log-out.svg";
+import { Icon } from "solid-heroicons";
+import { users, archiveBox, cog_6Tooth, arrowRightOnRectangle } from "solid-heroicons/outline";
 
 const Navbar: Component = () => {
     return (
@@ -17,17 +16,22 @@ const Navbar: Component = () => {
             </A>
             <A href="/dash/members">
                 <div class={styles.link}>
-                    <img src={users} alt="Members" />
+                    <Icon path={users} />
                 </div>
             </A>
             <A href="/dash/projects">
                 <div class={styles.link}>
-                    <img src={archive} alt="Projects" />
+                    <Icon path={archiveBox} />
+                </div>
+            </A>
+            <A href="/dash/settings">
+                <div class={styles.link}>
+                    <Icon path={cog_6Tooth} />
                 </div>
             </A>
             <A href="/logout">
                 <div class={styles.link}>
-                    <img src={logout} alt="Logout" />
+                    <Icon path={arrowRightOnRectangle} />
                 </div>
             </A>
         </nav>

@@ -36,6 +36,14 @@ a {
     justify-content: center;
 }
 
+.link > svg {
+    color: white;
+}
+
+.link:hover > svg {
+    color: #5a8bd4;
+}
+
 .profile {
     height: 48px;
     width: 48px;
