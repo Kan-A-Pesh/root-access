@@ -12,6 +12,7 @@ import Projects from "~/pages/Home/Projects/Projects";
 import AddProject from "~/pages/Home/Projects/AddProject";
 import Stats from "~/pages/Home/Projects/Stats";
 import Register from "~/pages/Register/Register";
+import Settings from "~/pages/Home/Settings/Settings";
 
 import Background from "~/components/Background/Background";
 
@@ -29,6 +30,7 @@ const App: Component = () => {
                     <Route path="/projects" component={Projects} />
                     <Route path="/projects/add" component={AddProject} />
                     <Route path="/projects/:id" component={Stats} />
+                    <Route path="/settings" component={Settings} />
                 </Route>
                 <Route path="/logout" component={Logout} />
                 <Route path="/register" component={Register} />

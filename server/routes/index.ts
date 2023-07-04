@@ -6,6 +6,7 @@ const router = express.Router();
 router.use("/auth", require("./auth").default);
 router.use("/projects", require("./projects").default);
 router.use("/users", require("./users").default);
+router.use("/settings", require("./settings").default);
 
 router.get("/coffee", (req: Request, res: Response) => {
     return res.status(418).send("Thanks for the coffee ☕️! But honestly, I prefer tea 🍵...");
