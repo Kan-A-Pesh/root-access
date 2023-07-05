@@ -1,17 +1,19 @@
+import Endpoint, { EndpointResponse } from "@/endpoint";
 import UserModel from "@/models/user";
 import { Request, Response } from "express";
 
-export default async (req: Request, res: Response) => {
-    const userModels = await UserModel.find({});
+export default new Endpoint(
+    null, // requiredRole
+    null, // requiredPermission
+    async (req: Request) => {
+        const userModels = await UserModel.find({});
 
-    // Remove passhash
-    const users = userModels.map((user) => {
-        const { passhash, ...rest } = user.toObject();
-        return rest;
-    });
+        // Remove passhash
+        const users = userModels.map((user) => {
+            const { passhash, ...rest } = user.toObject();
+            return rest;
+        });
 
-    return res.status(200).json({
-        status: "success",
-        payload: users,
-    });
-};
+        return new EndpointResponse(200, users);
+    },
+);

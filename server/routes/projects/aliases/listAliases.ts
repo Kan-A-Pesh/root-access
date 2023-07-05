@@ -1,8 +1,10 @@
+import Endpoint, { EndpointResponse } from "@/endpoint";
 import { Request, Response } from "express";
 
-export default (req: Request, res: Response) => {
-    res.status(200).json({
-        status: "success",
-        payload: req.project?.proxyAliases,
-    });
-};
+export default new Endpoint(
+    null, // requiredRole
+    null, // requiredPermission
+    async (req: Request) => {
+        return new EndpointResponse(200, req.project?.proxyAliases);
+    },
+);

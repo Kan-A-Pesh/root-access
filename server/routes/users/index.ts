@@ -1,12 +1,16 @@
 import express from "express";
 import { requireAuth } from "@/middlewares/authMiddleware";
-
 const router = express.Router();
 
-router.get("/", requireAuth, require("./getUser").default);
-router.get("/list", requireAuth, require("./listUsers").default);
-router.get("/:handle", requireAuth, require("./getUser").default);
-router.delete("/:handle", requireAuth, require("./deleteUser").default);
-router.patch("/:handle", requireAuth, require("./updateUser").default);
+import getUser from "./getUser";
+import listUsers from "./listUsers";
+import deleteUser from "./deleteUser";
+import updateUser from "./updateUser";
+
+router.get("/", requireAuth, getUser.express);
+router.get("/list", requireAuth, listUsers.express);
+router.get("/:handle", requireAuth, getUser.express);
+router.delete("/:handle", requireAuth, deleteUser.express);
+router.patch("/:handle", requireAuth, updateUser.express);
 
 export default router;

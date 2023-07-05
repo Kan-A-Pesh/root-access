@@ -1,10 +1,13 @@
 import express from "express";
 import { requireAuth } from "@/middlewares/authMiddleware";
-
 const router = express.Router();
 
-router.get("/", requireAuth, require("./getSettings").default);
-router.post("/", requireAuth, require("./setSettings").default);
-router.get("/repos", requireAuth, require("./getRepos").default);
+import getSettings from "./getSettings";
+import setSettings from "./setSettings";
+import getRepos from "./getRepos";
+
+router.get("/", requireAuth, getSettings.express);
+router.post("/", requireAuth, setSettings.express);
+router.get("/repos", requireAuth, getRepos.express);
 
 export default router;

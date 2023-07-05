@@ -1,20 +1,14 @@
 import Github from "@/controllers/github";
 import Workspace from "@/controllers/workspace";
+import Endpoint, { EndpointResponse } from "@/endpoint";
 import ProjectModel, { ProjectRole, ProjectUtils } from "@/models/project";
 import Repository from "@/models/repository";
 import { Request, Response } from "express";
 
-export default async (req: Request, res: Response) => {
-    if (ProjectUtils.hasPermission(req.permissionRole, ProjectRole.RESPO)) {
-        return res.status(400).json({
-            status: "error",
-            payload: {
-                message: "User does not have permission to delete the project repo",
-            },
-        });
-    }
-
-    try {
+export default new Endpoint(
+    null, // requiredRole
+    ProjectRole.RESPO, // requiredPermission
+    async (req: Request) => {
         const githubAgent = await Github.create();
         const workspace = Workspace.fromProject(req.project!);
 
@@ -24,23 +18,6 @@ export default async (req: Request, res: Response) => {
             githubRepo: null,
         });
 
-        return res.status(200).json({
-            status: "success",
-            payload: {
-                message: "Successfully deleted project repo",
-            },
-        });
-    } catch (err) {
-        let message = err;
-        if (err instanceof Error) {
-            message = err.message;
-        }
-
-        return res.status(500).json({
-            status: "error",
-            payload: {
-                message,
-            },
-        });
-    }
-};
+        return new EndpointResponse(200, "Successfully deleted project repo");
+    },
+);

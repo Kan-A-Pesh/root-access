@@ -6,6 +6,18 @@ export enum UserRole {
     MEMBER = "member",
 }
 
+export class UserUtils {
+    public static hasPermission(userPermission: UserRole | undefined, requiredPermission: UserRole) {
+        if (!userPermission) return false;
+
+        if (userPermission === UserRole.ADMIN) return true;
+        if (userPermission === UserRole.RESPO && requiredPermission !== UserRole.ADMIN) return true;
+        if (userPermission === UserRole.MEMBER && requiredPermission === UserRole.MEMBER) return true;
+
+        return false;
+    }
+}
+
 export interface User extends Document {
     handle: string;
     email: string;

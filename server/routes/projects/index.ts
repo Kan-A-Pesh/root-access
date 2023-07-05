@@ -1,15 +1,21 @@
 import express from "express";
 import { requireAuth } from "@/middlewares/authMiddleware";
 import { requireRole } from "@/middlewares/projectMiddleware";
-
 const router = express.Router();
 
-router.get("/", requireAuth, require("./listProjects").default);
-router.get("/:project_id", requireAuth, requireRole, require("./readProject").default);
-router.get("/:project_id/keys", requireAuth, requireRole, require("./readProjectKey").default);
-router.post("/", requireAuth, require("./createProject").default);
-router.delete("/:project_id", requireAuth, requireRole, require("./deleteProject").default);
-router.patch("/:project_id", requireAuth, requireRole, require("./updateProject").default);
+import listProjects from "./listProjects";
+import readProject from "./readProject";
+import readProjectKey from "./readProjectKey";
+import createProject from "./createProject";
+import deleteProject from "./deleteProject";
+import updateProject from "./updateProject";
+
+router.get("/", requireAuth, listProjects.express);
+router.get("/:project_id", requireAuth, requireRole, readProject.express);
+router.get("/:project_id/keys", requireAuth, requireRole, readProjectKey.express);
+router.post("/", requireAuth, createProject.express);
+router.delete("/:project_id", requireAuth, requireRole, deleteProject.express);
+router.patch("/:project_id", requireAuth, requireRole, updateProject.express);
 
 router.use("/:project_id/members", requireAuth, requireRole, require("./members").default);
 router.use("/:project_id/aliases", requireAuth, requireRole, require("./aliases").default);

@@ -1,62 +1,34 @@
+import Endpoint, { EndpointError, EndpointResponse } from "@/endpoint";
 import UserModel, { UserRole } from "@/models/user";
 import { Request, Response } from "express";
 
-export default async (req: Request, res: Response) => {
-    if (req.user?.role !== UserRole.ADMIN) {
-        return res.status(401).json({
-            status: "error",
-            payload: {
-                message: "Unauthorized",
-            },
-        });
-    }
+export default new Endpoint(
+    UserRole.ADMIN, // requiredRole
+    null, // requiredPermission
+    async (req: Request) => {
+        if (!req.params.handle) {
+            throw new EndpointError(400, "Handle is required");
+        }
 
-    if (!req.params.handle) {
-        return res.status(400).json({
-            status: "error",
-            payload: {
-                message: "Handle is required",
-            },
-        });
-    }
+        if (!req.body.role || !Object.values(UserRole).includes(req.body.role)) {
+            throw new EndpointError(400, "Missing or invalid role");
+        }
 
-    if (!req.body.role || !Object.values(UserRole).includes(req.body.role)) {
-        return res.status(400).json({
-            status: "error",
-            payload: {
-                message: "Missing or invalid role",
-                sentPayload: req.body,
-            },
-        });
-    }
+        if (req.user?.handle === req.params.handle) {
+            throw new EndpointError(400, "Cannot update your own role");
+        }
 
-    if (req.user?.handle === req.params.handle) {
-        return res.status(400).json({
-            status: "error",
-            payload: {
-                message: "Cannot update your own role",
-            },
-        });
-    }
+        // Update user
+        const user = await UserModel.findOneAndUpdate({ handle: req.params.handle }, { role: req.body.role }, { new: false });
 
-    // Update user
-    const user = await UserModel.findOneAndUpdate({ handle: req.params.handle }, { role: req.body.role }, { new: false });
+        if (!user) {
+            throw new EndpointError(404, "User not found");
+        }
 
-    if (!user) {
-        return res.status(404).json({
-            status: "error",
-            payload: {
-                message: "User not found",
-            },
-        });
-    }
-
-    return res.status(200).json({
-        status: "success",
-        payload: {
+        return new EndpointResponse(200, {
             message: "User updated",
             from: user.role,
             to: req.body.role,
-        },
-    });
-};
+        });
+    },
+);

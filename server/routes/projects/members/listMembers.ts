@@ -1,40 +1,39 @@
+import Endpoint, { EndpointError, EndpointResponse } from "@/endpoint";
 import UserModel from "@/models/user";
 import { Request, Response } from "express";
 
-export default async (req: Request, res: Response) => {
-    let permissions = req.project?.permissions;
+export default new Endpoint(
+    null, // requiredRole
+    null, // requiredPermission
+    async (req: Request) => {
+        let permissions = req.project?.permissions;
 
-    if (!permissions) {
-        return res.status(404).json({
-            status: "error",
-            message: "Permissions not found",
-        });
-    }
+        if (!permissions) {
+            throw new EndpointError(404, "Permissions not found");
+        }
 
-    permissions = await Promise.all(
-        permissions?.map(async (permission) => {
-            const user = await UserModel.findById(permission.userId);
+        permissions = await Promise.all(
+            permissions?.map(async (permission) => {
+                const user = await UserModel.findById(permission.userId);
 
-            if (!user) {
+                if (!user) {
+                    return {
+                        ...permission,
+                        user: null,
+                    };
+                }
+
                 return {
                     ...permission,
-                    user: null,
+                    user: {
+                        handle: user.handle,
+                        realname: user.realname,
+                        role: user.role,
+                    },
                 };
-            }
+            }),
+        );
 
-            return {
-                ...permission,
-                user: {
-                    handle: user.handle,
-                    realname: user.realname,
-                    role: user.role,
-                },
-            };
-        }),
-    );
-
-    res.status(200).json({
-        status: "success",
-        payload: permissions,
-    });
-};
+        return new EndpointResponse(200, permissions);
+    },
+);
