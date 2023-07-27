@@ -1,18 +1,18 @@
-import type { Component } from "solid-js";
+import { lazy, type Component } from "solid-js";
 import { Router, Routes, Route } from "@solidjs/router";
 
-import Home from "~/pages/Home/Home";
+const Home = lazy(() => import("~/pages/Home/Home"));
 import Login from "~/pages/Login/Login";
 import Logout from "~/pages/Logout/Logout";
 
-import Members from "~/pages/Home/Members/Members";
-import AddMember from "~/pages/Home/Members/AddMember";
-import Profile from "~/pages/Home/Members/Profile";
-import Projects from "~/pages/Home/Projects/Projects";
-import AddProject from "~/pages/Home/Projects/AddProject";
-import Stats from "~/pages/Home/Projects/Stats";
-import Register from "~/pages/Register/Register";
-import Settings from "~/pages/Home/Settings/Settings";
+const Members = lazy(() => import("~/pages/Home/Members/Members"));
+const AddMember = lazy(() => import("~/pages/Home/Members/AddMember"));
+const Profile = lazy(() => import("~/pages/Home/Members/Profile"));
+const Projects = lazy(() => import("~/pages/Home/Projects/Projects"));
+const AddProject = lazy(() => import("~/pages/Home/Projects/AddProject"));
+const Stats = lazy(() => import("~/pages/Home/Projects/Stats"));
+const Register = lazy(() => import("~/pages/Register/Register"));
+const Settings = lazy(() => import("~/pages/Home/Settings/Settings"));
 
 import Background from "~/components/Background/Background";
 
@@ -23,7 +23,6 @@ const App: Component = () => {
         <Router>
             <Routes>
                 <Route path="/dash" component={Home}>
-                    <Route path="/" component={Profile} />
                     <Route path="/members" component={Members} />
                     <Route path="/members/add" component={AddMember} />
                     <Route path="/members/:handle" component={Profile} />
@@ -31,6 +30,7 @@ const App: Component = () => {
                     <Route path="/projects/add" component={AddProject} />
                     <Route path="/projects/:id" component={Stats} />
                     <Route path="/settings" component={Settings} />
+                    <Route path="/*" component={Profile} />
                 </Route>
                 <Route path="/logout" component={Logout} />
                 <Route path="/register" component={Register} />
