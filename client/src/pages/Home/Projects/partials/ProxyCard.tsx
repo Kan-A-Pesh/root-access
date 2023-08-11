@@ -21,41 +21,70 @@ const ProxyCard: Component<{
                 <For each={aliases()} fallback={<p class="text-handle">No aliases</p>}>
                     {(alias) => (
                         <div class="card">
-                            <p class="text-role">{alias.destination}</p>
-                            <For each={alias.remoteUrls}>{(url) => <p class="text-handle">{url}</p>}</For>
-                            <button
-                                class="form-element btn btn-danger"
-                                onClick={() => {
-                                    axios.delete(`/projects/${projectId}/aliases/${alias.id}`).then((res) => {
-                                        setAliases(aliases().filter((a: any) => a.id !== alias.id));
-                                    });
-                                }}
-                            >
-                                Delete alias
-                            </button>
+                            <p class="text-role">→ {alias.destination}</p>
+                            <For each={alias.remoteUrls}>
+                                {(url) => (
+                                    <>
+                                        <Show when={editAliases}>
+                                            <input
+                                                type="text"
+                                                value={url}
+                                                class="form-element"
+                                                onChange={(e) => {
+                                                    const newAliases = aliases().map((newAlias: any) => {
+                                                        if (newAlias.id === alias.id) {
+                                                            newAlias.remoteUrls = newAlias.remoteUrls.map((newUrl: any) => {
+                                                                if (newUrl === url) {
+                                                                    return e.target.value;
+                                                                }
+                                                                return newUrl;
+                                                            });
+                                                        }
+                                                        return newAlias;
+                                                    });
+                                                    setAliases(newAliases);
+                                                }}
+                                                onKeyPress={(e) => {
+                                                    if (e.key === " " || e.key === "Enter" || e.key === "Tab" || e.key === ",") {
+                                                        e.preventDefault();
+
+                                                        const newAliases = aliases().map((newAlias: any) => {
+                                                            if (newAlias.id === alias.id) {
+                                                                newAlias.remoteUrls.push("");
+                                                            }
+                                                            return newAlias;
+                                                        });
+                                                        setAliases(newAliases);
+                                                    }
+                                                }}
+                                            />
+                                        </Show>
+                                        <Show when={!editAliases}>
+                                            <p class="text-handle">{url}</p>
+                                        </Show>
+                                    </>
+                                )}
+                            </For>
                         </div>
                     )}
                 </For>
             </div>
-            <Show when={editAliases}>
+            <Show when={editAliases && aliases() !== projectAliases}>
                 <button
-                    class="form-element btn btn-primary"
+                    class="button button--primary"
                     onClick={() => {
-                        const destination = prompt("Enter destination");
-                        const alias = (prompt("Enter remote URLs (separated by commas)") ?? "").split(",");
-                        axios.post(`/projects/${projectId}/aliases`, { destination, alias }).then((res) => {
-                            setAliases([
-                                ...aliases(),
-                                {
-                                    id: res.data.payload.id,
-                                    destination: res.data.payload.destination,
-                                    remoteUrls: res.data.payload.remoteUrls,
-                                },
-                            ]);
-                        });
+                        axios
+                            .put(`/projects/${projectId}/aliases`, { aliases: aliases() })
+                            .then((res) => {
+                                window.location.reload();
+                            })
+                            .catch((err) => {
+                                console.error(err);
+                                alert("Something went wrong!\nErr: " + err.response.data.payload.message ?? err.message ?? "Unknown error");
+                            });
                     }}
                 >
-                    Add alias (BETA)
+                    Save
                 </button>
             </Show>
         </div>

@@ -49,7 +49,7 @@ export default new Endpoint(
                 throw new EndpointError(400, "Invalid destination");
             }
 
-            destination = req.body.destination;
+            destination = "path|" + req.body.destination;
             destinationType = "path";
         }
 

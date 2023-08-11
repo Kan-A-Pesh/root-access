@@ -6,6 +6,7 @@ import ProxyCard from "./partials/ProxyCard";
 import MemberCard from "./partials/MemberCard";
 import RepoCard from "./partials/RepoCard";
 import CredentialsCard from "./partials/CredentialsCard";
+import ServiceCard from "./partials/ServiceCard";
 
 const Stats: Component = () => {
     const params = useParams();
@@ -60,6 +61,9 @@ const Stats: Component = () => {
                 </Show>
                 <Show when={project().aliases}>
                     <ProxyCard projectAliases={project().aliases} editAliases={project().editAliases} projectId={project().id} />
+                </Show>
+                <Show when={project().displayName}>
+                    <ServiceCard projectId={project().id} editService={project().editService} />
                 </Show>
                 <Show when={project().githubRepo !== undefined}>
                     <RepoCard repo={project().githubRepo} editRepo={project().editGithubRepo} projectId={project().id} />

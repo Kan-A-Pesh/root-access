@@ -17,9 +17,10 @@ export const requireRole = async (req: Request, res: Response, next: NextFunctio
     }
 
     // Get project from id
-    const project = await ProjectModel.findById(project_id).exec();
-
-    if (!project) {
+    let project = null;
+    try {
+        project = await ProjectModel.findById(project_id);
+    } catch (err) {
         return res.status(400).json({
             status: "error",
             payload: {
@@ -31,14 +32,14 @@ export const requireRole = async (req: Request, res: Response, next: NextFunctio
     // Check for admin or respo
     if (req.user?.role === UserRole.ADMIN || req.user?.role === UserRole.RESPO) {
         // Add to request
-        req.project = project.toObject();
+        req.project = project!.toObject();
         req.permissionRole = req.user?.role === UserRole.ADMIN ? ProjectRole.ADMIN : ProjectRole.RESPO;
 
         return next();
     }
 
     // Get user role from project
-    const permission = project.permissions.find((value) => value.userId === req.user?._id);
+    const permission = project!.permissions.find((value) => value.userId === req.user?._id);
 
     if (!permission) {
         return res.status(400).json({
@@ -50,7 +51,7 @@ export const requireRole = async (req: Request, res: Response, next: NextFunctio
     }
 
     // Add to request
-    req.project = project.toObject();
+    req.project = project!.toObject();
     req.permissionRole = permission.role;
 
     next();

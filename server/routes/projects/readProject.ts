@@ -19,6 +19,7 @@ export default new Endpoint(
             role: req.permissionRole,
             editGithubRepo: false,
             editPermissions: false,
+            editService: false,
             editAliases: false,
             editMetadata: false,
             readPrivateKey: false,
@@ -31,6 +32,7 @@ export default new Endpoint(
             project.permissions = req.project?.permissions;
             project.editMetadata = true;
             project.editAliases = true;
+            project.editService = true;
         }
 
         if (ProjectUtils.hasPermission(req.permissionRole ?? ProjectRole.DEV, ProjectRole.RESPO)) {

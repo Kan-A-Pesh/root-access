@@ -20,5 +20,6 @@ router.patch("/:project_id", requireAuth, requireRole, updateProject.express);
 router.use("/:project_id/members", requireAuth, requireRole, require("./members").default);
 router.use("/:project_id/aliases", requireAuth, requireRole, require("./aliases").default);
 router.use("/:project_id/repo", requireAuth, requireRole, require("./repo").default);
+router.use("/:project_id/service", requireAuth, requireRole, require("./service").default);
 
 export default router;
