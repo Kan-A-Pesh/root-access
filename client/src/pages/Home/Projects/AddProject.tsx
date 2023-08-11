@@ -42,7 +42,7 @@ const AddProject: Component = () => {
                     </Show>
                 </div>
                 <div class="card">
-                    <h2 class="text-title">// OPTIONAL DATA</h2>
+                    <h2 class="text-title">// DETAILS (OPTIONAL)</h2>
                     <p class="text-handle">Display name</p>
                     <input
                         type="text"
@@ -77,30 +77,11 @@ const AddProject: Component = () => {
                             }
                         }}
                     />
-                    <br />
-                    <p class="text-handle">Status</p>
-                    <select
-                        class="form-element select"
-                        value={payload().status || "none"}
-                        style={{ opacity: payload().status ? 1 : 0.5 }}
-                        onInput={(e: Event) => {
-                            const value = (e.target as HTMLInputElement).value;
-                            if (value !== "none") {
-                                setPayload({ ...payload(), status: value });
-                            } else {
-                                const { status, ...rest } = payload();
-                                setPayload(rest);
-                            }
-                        }}
-                    >
-                        <option value="none">Default</option>
-                        <option value="planed">Planed</option>
-                        <option value="in_progress">In progress</option>
-                        <option value="finished">Finished</option>
-                        <option value="abandoned">Abandoned</option>
-                    </select>
+                </div>
 
-                    <br />
+                <div class="card">
+                    <h2 class="text-title">// DATES (OPTIONAL)</h2>
+
                     <p class="text-handle">Start date</p>
                     <input
                         type="date"
@@ -117,6 +98,7 @@ const AddProject: Component = () => {
                             }
                         }}
                     />
+
                     <p class="text-handle">End date</p>
                     <input
                         type="date"
@@ -133,26 +115,8 @@ const AddProject: Component = () => {
                             }
                         }}
                     />
-
-                    <br />
-                    <p class="text-handle">Github repository</p>
-                    <input
-                        type="text"
-                        placeholder="https://github.com/Kan-A-Pesh/root-access"
-                        class="form-element"
-                        value={payload().githubRepo || ""}
-                        style={{ opacity: payload().githubRepo ? 1 : 0.5 }}
-                        onInput={(e: Event) => {
-                            const value = (e.target as HTMLInputElement).value;
-                            if (value.length > 0) {
-                                setPayload({ ...payload(), githubRepo: value });
-                            } else {
-                                const { githubRepo, ...rest } = payload();
-                                setPayload(rest);
-                            }
-                        }}
-                    />
                 </div>
+
                 <div class="card">
                     <h2 class="text-title">// CREATE PROJECT</h2>
                     <button

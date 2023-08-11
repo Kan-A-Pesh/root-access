@@ -16,7 +16,7 @@ const CredentialsCard: Component<{
                 setKeys(res.data.payload);
             })
             .catch((err) => {
-                console.error(err);
+                setKeys(null);
             });
 
     return (
@@ -45,8 +45,11 @@ const CredentialsCard: Component<{
                             Download public key
                         </a>
                     </Show>
-                    <Show when={!keys()}>
+                    <Show when={keys() === undefined}>
                         <p class="text-handle">Downloading keys ...</p>
+                    </Show>
+                    <Show when={keys() === null}>
+                        <p class="text-handle">No keys found</p>
                     </Show>
                 </div>
             </Show>

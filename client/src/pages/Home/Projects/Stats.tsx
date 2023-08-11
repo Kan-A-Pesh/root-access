@@ -15,7 +15,6 @@ const Stats: Component = () => {
     axios
         .get(`/projects/${params.id ?? "unknown"}`)
         .then((res: any) => {
-            console.log(res.data.payload);
             setProject(res.data.payload);
         })
         .catch((err) => {
