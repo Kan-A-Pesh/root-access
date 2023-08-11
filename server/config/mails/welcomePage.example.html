@@ -1,9 +1,9 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<!DOCTYPE html>
+<html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>La 404 Devinci</title>
+        <title>ROOT//ACCESS</title>
         <style type="text/css">
             /* ----- Custom Font Import ----- */
             @import url(https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic&subset=latin,latin-ext);
@@ -46,8 +46,9 @@
                 width: 0 !important;
                 mso-hide: all;
             "
-            >Vous avez été invité(e) à rejoindre La 404 Devinci</span
         >
+            You have been invited to join ROOT//ACCESS
+        </span>
 
         <!-- / Full width container -->
         <table
@@ -78,7 +79,7 @@
                                 <table class="container header" border="0" cellpadding="0" cellspacing="0" width="620" style="width: 620px">
                                     <tr>
                                         <td style="padding: 30px 0 30px 0; border-bottom: solid 1px #eeeeee" align="left">
-                                            <a href="#" style="font-size: 30px; text-decoration: none; color: #000000">La 404 Devinci</a>
+                                            <a href="#" style="font-size: 30px; text-decoration: none; color: #000000">ROOT//ACCESS</a>
                                         </td>
                                     </tr>
                                 </table>
@@ -99,7 +100,7 @@
                                             style="font-size: 43px; font-weight: bold; padding: 80px 0 15px 0"
                                             align="left"
                                         >
-                                            Bienvenue, {{name}}
+                                            Welcome, {{name}}
                                         </td>
                                     </tr>
 
@@ -109,13 +110,13 @@
                                             style="font-size: 16px; line-height: 27px; color: #969696; padding: 0 60px 90px 0"
                                             align="left"
                                         >
-                                            Tu as été invité(e) à rejoindre La 404 Devinci, en tant que <b>{{role}}</b>. Nous t'invitons à
-                                            cliquer sur le lien ci dessous pour activer ton compte.
+                                            You have been invited to join ROOT//ACCESS, as a <b>{{role}}</b>. We invite you to click on the
+                                            link below to activate your account.
 
                                             <br /><br />
 
                                             <a
-                                                href="https://localhost:3000/register/finish?token={{token}}&email={{email}}&realname={{name}}"
+                                                href="{{BASE_URL}}/register?token={{token}}&email={{email}}&realname={{name}}"
                                                 style="
                                                     display: inline-block;
                                                     text-decoration: none;
@@ -128,7 +129,7 @@
                                                     box-shadow: 0 3px 0 #000000;
                                                 "
                                             >
-                                                Activer mon compte
+                                                Activate my account
                                             </a>
 
                                             <br /><br />

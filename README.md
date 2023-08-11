@@ -64,6 +64,12 @@ POST /api/auth/register/admin
 }
 ```
 
+Voici la commande cURL correspondante :
+
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{"rootkey":"{{ROOT_KEY}}","realname":"Full Name","email":"{{EMAIL}}"}' {{BASE_URL}}/api/auth/register/admin
+```
+
 Le paramètre `rootkey` est une clé secrète qui permet de créer un compte administrateur. \
 Elle est définie dans le fichier `.env` à la racine du projet.
 
