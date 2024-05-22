@@ -1,56 +1,56 @@
 # Dashboard ROOT//ACCESS
 
-> 🗒️ *Note:* ROOT//ACCESS utilise le système d'utilisateur d'UNIX, il ne fonctionne donc que sur des systèmes UNIX (Linux, macOS, etc.).
+> 🗒️ *Note:* ROOT//ACCESS uses the UNIX user system, so it only works on UNIX systems (Linux, macOS, etc.).
 
-Le Dashboard ROOT//ACCESS est une web-app permettant la gestion des membres, des projets. \
-Il vous permet d'ajouter, supprimer et mettre à jour facilement les informations des membres, ainsi que de créer, supprimer et modifier les détails des projets. \
-Le dashboard vous permet également de lier des dépôts GitHub pour des processus d'intégration continue et de déploiement (CI/CD), tout en offrant un accès FTP, SFTP et SSH pour une collaboration et un déploiement efficaces.
+The ROOT//ACCESS Dashboard is a web app for managing members, projects. \
+It allows you to easily add, delete, and update member information, as well as create, delete, and modify project details. \
+The dashboard also enables you to link GitHub repositories for continuous integration and deployment (CI/CD) processes, while providing FTP, SFTP, and SSH access for efficient collaboration and deployment.
 
-## 📦 Fonctionnalités
+## 📦 Features
 
-- Un dashboard pour gérer les membres et les projets
-- Une intégration avec GitHub pour des flux de travail CI/CD
-- Des contrôles d'accès avec FTP, SFTP et SSH pour le développement et le déploiement collaboratifs par projet
+- A dashboard for managing members and projects
+- Integration with GitHub for CI/CD workflows
+- Access controls with FTP, SFTP, and SSH for collaborative development and deployment on a per-project basis
 
 ## 🚀 Installation
 
-### Prérequis
+### Prerequisites
 
-Le projet nécessite Node.js, npm et MongoDB pour fonctionner.
+The project requires Node.js, npm, and MongoDB to function.
 
 ```bash
-# Installer Node.js et npm
+# Install Node.js and npm
 sudo apt install nodejs npm
 
-# Installer MongoDB
+# Install MongoDB
 sudo apt install mongodb
 ```
 
-Il est aussi possible d'installer MongoDB avec Docker.
+MongoDB can also be installed with Docker.
 
 ```bash
-# Démarrer un conteneur MongoDB
+# Start a MongoDB container
 docker run -d -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD=root --name root-mongodb mongo
 
-# Web UI (facultatif)
+# Web UI (optional)
 npm install -g mongoku
 mongoku start
 ```
 
-Le projet utilise NGINX pour le reverse proxy, il est donc nécessaire de l'installer.
+The project uses NGINX for reverse proxy, so it needs to be installed.
 
 ```bash
-# Installer NGINX
+# Install NGINX
 sudo apt install nginx
 
-# Démarrer NGINX
-sudo systemctl start nginx # ou `sudo service nginx start`
+# Start NGINX
+sudo systemctl start nginx # or `sudo service nginx start`
 ```
 
-### Création d'un compte administrateur
+### Creating an Admin Account
 
-La création de compte administrateur est nécessaire pour accéder au dashboard. \
-Elle doit être effectuée manuellement avec la requête HTTP suivante :
+Creating an admin account is necessary to access the dashboard. \
+It must be done manually with the following HTTP request:
 
 ```http
 POST /api/auth/register/admin
@@ -64,20 +64,20 @@ POST /api/auth/register/admin
 }
 ```
 
-Voici la commande cURL correspondante :
+Here is the corresponding cURL command:
 
 ```bash
 curl -X POST -H "Content-Type: application/json" -d '{"rootkey":"{{ROOT_KEY}}","realname":"Full Name","email":"{{EMAIL}}"}' {{BASE_URL}}/api/auth/register/admin
 ```
 
-Le paramètre `rootkey` est une clé secrète qui permet de créer un compte administrateur. \
-Elle est définie dans le fichier `.env` à la racine du projet.
+The `rootkey` parameter is a secret key used to create an admin account. \
+It is defined in the `.env` file at the root of the project.
 
-Les paramètres `realname` et `email` sont les informations du compte administrateur. \
-Une fois la requête effectuée, un email de confirmation est envoyé à l'adresse email spécifiée. \
-Il contient un lien permettant de finaliser la création du compte, il est valide pendant 24 heures.
+The `realname` and `email` parameters are the admin account information. \
+After the request is made, a confirmation email is sent to the specified email address. \
+It contains a link to finalize the account creation, which is valid for 24 hours.
 
 ## 📄 License
 
-Ce projet est privé et réservé uniquement à un usage interne.\
-Toute reproduction, distribution ou modification non autorisée est strictement interdite.
+This project is licensed under the GNU General Public License v3.0.\
+See the [LICENSE](./LICENSE) file for details.
